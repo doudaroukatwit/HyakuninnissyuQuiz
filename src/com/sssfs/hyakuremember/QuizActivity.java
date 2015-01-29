@@ -16,52 +16,52 @@ import android.content.SharedPreferences;
 import java.util.Random;
 
 public class QuizActivity extends Activity {
-	// ‘I‘ğˆ
+	// é¸æŠè‚¢
 	ImageButton shimo1;
 	ImageButton shimo2;
 	ImageButton shimo3;
 	ImageButton shimo4;
 
-	// ã‚Ì‹å
+	// ä¸Šã®å¥
 	TextView kaminoku;
 
-	// ƒJƒEƒ“ƒg
+	// ã‚«ã‚¦ãƒ³ãƒˆ
 	TextView counter;
 
-	// ChooseActivity‚©‚çó‚¯æ‚é
+	// ChooseActivityã‹ã‚‰å—ã‘å–ã‚‹
 	int number;
 	int number2;
 
-	// “š‚¦ˆÈŠO‚Ì3‚Â‚Ì‰º‚Ì‹å‚Ì—v‘f
+	// ç­”ãˆä»¥å¤–ã®3ã¤ã®ä¸‹ã®å¥ã®è¦ç´ 
 	int No[];
 
-	// ƒ‰ƒ“ƒ_ƒ€
+	// ãƒ©ãƒ³ãƒ€ãƒ 
 	int[] random;
 	int[] array;
 
-	// ‘S‘Ì‚Ì—v‘f
+	// å…¨ä½“ã®è¦ç´ 
 	int[] never = new int[100];
 
-	// –â‘è”
+	// å•é¡Œæ•°
 	int count = 0;
 	int number3;
 
-	// ‰º‚Ì‹å‚Ì‰æ‘œ“ü‚ê‚é
+	// ä¸‹ã®å¥ã®ç”»åƒå…¥ã‚Œã‚‹
 	ImageButton[] shimo = new ImageButton[4];
 
-	// ³‰ğ”
+	// æ­£è§£æ•°
 	int right = 0;
 
-	// ‚¢‚ç‚È‚¢‚©‚à‚µ‚ê‚È‚¢
+	// ã„ã‚‰ãªã„ã‹ã‚‚ã—ã‚Œãªã„
 	int[] res = new int[4];
 	boolean quiz;
 	int q = 1;
 
-	// ƒ‚[ƒh‘I‘ğ
+	// ãƒ¢ãƒ¼ãƒ‰é¸æŠ
 	boolean repeat;
 	boolean hardcore;
 
-	// ã‚Ì‹å•¶š—ñ
+	// ä¸Šã®å¥æ–‡å­—åˆ—
 	final Integer[] stringkami = { R.string.kami1, R.string.kami2,
 			R.string.kami3, R.string.kami4, R.string.kami5, R.string.kami6,
 			R.string.kami7, R.string.kami8, R.string.kami9, R.string.kami10,
@@ -89,7 +89,7 @@ public class QuizActivity extends Activity {
 			R.string.kami95, R.string.kami96, R.string.kami97, R.string.kami98,
 			R.string.kami99, R.string.kami100, };
 
-	// ‰º‚Ì‹å•¶š—ñ
+	// ä¸‹ã®å¥æ–‡å­—åˆ—
 	final Integer[] stringshimo = { R.string.shimo1, R.string.shimo2,
 			R.string.shimo3, R.string.shimo4, R.string.shimo5, R.string.shimo6,
 			R.string.shimo7, R.string.shimo8, R.string.shimo9,
@@ -124,7 +124,7 @@ public class QuizActivity extends Activity {
 			R.string.shimo94, R.string.shimo95, R.string.shimo96,
 			R.string.shimo97, R.string.shimo98, R.string.shimo99,
 			R.string.shimo100, };
-	// ‰º‚Ì‹å‰æ‘œ
+	// ä¸‹ã®å¥ç”»åƒ
 	final Integer[] image = { R.drawable.shimo1, R.drawable.shimo2,
 			R.drawable.shimo3, R.drawable.shimo4, R.drawable.shimo5,
 			R.drawable.shimo6, R.drawable.shimo7, R.drawable.shimo8,
@@ -160,7 +160,7 @@ public class QuizActivity extends Activity {
 			R.drawable.shimo96, R.drawable.shimo97, R.drawable.shimo98,
 			R.drawable.shimo99, R.drawable.shimo100, };
 
-	// ƒ‰ƒ“ƒ_ƒ€‚©‚ç‘I‚ñ‚¾‚©‡”Ô‚©‚ç‚Å‘I‚ñ‚¾‚©‚Åˆ—‚ª•Ï‚í‚é
+	// ãƒ©ãƒ³ãƒ€ãƒ ã‹ã‚‰é¸ã‚“ã ã‹é †ç•ªã‹ã‚‰ã§é¸ã‚“ã ã‹ã§å‡¦ç†ãŒå¤‰ã‚ã‚‹
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -168,26 +168,26 @@ public class QuizActivity extends Activity {
 		count = 0;
 		quiz = true;
 
-		// ƒ‚[ƒh“Ç‚İ‚İ
+		// ãƒ¢ãƒ¼ãƒ‰èª­ã¿è¾¼ã¿
 		SharedPreferences mSp = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 		hardcore = mSp.getBoolean("hardcore", false);
 		repeat = mSp.getBoolean("repeat", false);
 
-		// ChooseActivity‚©‚ç’l‚ğó‚¯æ‚é
+		// ChooseActivityã‹ã‚‰å€¤ã‚’å—ã‘å–ã‚‹
 		Intent mQuiz = getIntent();
 		number = mQuiz.getIntExtra("number", 0);
 		number2 = mQuiz.getIntExtra("number2", 0);
 
-		// ’¼Ú‹N“®‚µ‚½A–ß‚éB
+		// ç›´æ¥èµ·å‹•ã—ãŸæ™‚ã€æˆ»ã‚‹ã€‚
 		if (number == 0) {
-			Toast.makeText(this, "–³—‚Å‚µ‚½", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "ç„¡ç†ã§ã—ãŸ", Toast.LENGTH_SHORT).show();
 			Intent main = new Intent(this, MainActivity.class);
 			startActivity(main);
 			finish();
 
 		} else if (number2 == 100) {
-			// 100‚Ìƒ‰ƒ“ƒ_ƒ€‚Ì
+			// 100ã®ãƒ©ãƒ³ãƒ€ãƒ ã®æ™‚
 			number3 = number2;
 			random = new int[100];
 			for (int i = 0; i < 100; i++) {
@@ -196,7 +196,7 @@ public class QuizActivity extends Activity {
 			}
 			shuffle(random);
 		} else if (number2 == 50 || number2 == 25) {
-			// 50‚Æ25‚Ìƒ‰ƒ“ƒ_ƒ€‚Ì
+			// 50ã¨25ã®ãƒ©ãƒ³ãƒ€ãƒ ã®æ™‚
 			number3 = number2;
 			Random mRandom = new Random();
 			random = new int[50];
@@ -209,51 +209,51 @@ public class QuizActivity extends Activity {
 			}
 
 		} else if (number == 1225) {
-			// 1ñ‚©‚ç25ñ‚Ì
+			// 1é¦–ã‹ã‚‰25é¦–ã®æ™‚
 			count = 0;
 			number = 25;
 			number3 = 25;
 
 		} else if (number == 26250) {
-			// 26ñ‚©‚ç50ñ‚Ì
+			// 26é¦–ã‹ã‚‰50é¦–ã®æ™‚
 			count = 25;
 			number = 50;
 			number3 = 25;
 
 		} else if (number == 51275) {
-			// 51ñ‚©‚ç75ñ‚Ì
+			// 51é¦–ã‹ã‚‰75é¦–ã®æ™‚
 			count = 50;
 			number = 75;
 			number3 = 25;
 
 		} else if (number == 762100) {
-			// 76ñ‚©‚ç100ñ‚Ì
+			// 76é¦–ã‹ã‚‰100é¦–ã®æ™‚
 			count = 75;
 			number = 100;
 			number3 = 25;
 
 		}
-		// –â‘è‚ğ‘I‚Ô
+		// å•é¡Œã‚’é¸ã¶
 		choices();
 	}
 
-	// –ß‚ê‚È‚¢‚æ‚¤‚É‚·‚é
+	// æˆ»ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		// TODO ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhEƒXƒ^ƒu
+		// TODO è‡ªå‹•ç”Ÿæˆã•ã‚ŒãŸãƒ¡ã‚½ãƒƒãƒ‰ãƒ»ã‚¹ã‚¿ãƒ–
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
 			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-				Toast.makeText(this, "–ß‚é‚Ì‚Í‹Ö~‚Å‚·", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "æˆ»ã‚‹ã®ã¯ç¦æ­¢ã§ã™", Toast.LENGTH_SHORT).show();
 				return false;
 			}
 		}
 		return super.dispatchKeyEvent(event);
 	}
 
-	// o‘è•”•ª
+	// å‡ºé¡Œéƒ¨åˆ†
 	private void choices() {
 		// TODO Auto-generated method stub
-		// “š‚¦ˆÈŠO‚Ì3‚Â‚Ì‘I‘ğˆ‚ğ‘I‚Ô•”•ª
+		// ç­”ãˆä»¥å¤–ã®3ã¤ã®é¸æŠè‚¢ã‚’é¸ã¶éƒ¨åˆ†
 		Random mRandom = new Random();
 		int[] No = new int[3];
 		for (int i = 0; i < 3; i++) {
@@ -278,34 +278,34 @@ public class QuizActivity extends Activity {
 			Log.v(String.valueOf(i), String.valueOf(No[i]));
 		}
 
-		// ‘I‘ğˆ‚ğ”z—ñres‚É’Ç‰ÁB
+		// é¸æŠè‚¢ã‚’é…åˆ—resã«è¿½åŠ ã€‚
 		res[0] = No[0];
 		res[1] = No[1];
 		res[2] = No[2];
 
-		// ƒ‰ƒ“ƒ_ƒ€‚¾‚Á‚½‚ç
+		// ãƒ©ãƒ³ãƒ€ãƒ ã ã£ãŸã‚‰
 		if (number2 == 100 || number2 == 50 || number2 == 25) {
 			res[3] = random[count];
 
 		} else {
-			// ƒ‰ƒ“ƒ_ƒ€‚¶‚á‚È‚©‚Á‚½‚ç
+			// ãƒ©ãƒ³ãƒ€ãƒ ã˜ã‚ƒãªã‹ã£ãŸã‚‰
 			res[3] = count;
 
 		}
 
-		// ImageButton‚ğŒ‹‚Ñ‚Â‚¯
+		// ImageButtonã‚’çµã³ã¤ã‘
 		shimo1 = (ImageButton) findViewById(R.id.imageButton1);
 		shimo2 = (ImageButton) findViewById(R.id.imageButton2);
 		shimo3 = (ImageButton) findViewById(R.id.imageButton3);
 		shimo4 = (ImageButton) findViewById(R.id.imageButton4);
 
-		// ImageButton‚ğ”z—ñshimo‚É’Ç‰ÁB‚±‚±‰˜‚¢‚©‚ç•Ï‚¦‚½‚¢
+		// ImageButtonã‚’é…åˆ—shimoã«è¿½åŠ ã€‚ã“ã“æ±šã„ã‹ã‚‰å¤‰ãˆãŸã„
 		shimo[0] = shimo1;
 		shimo[1] = shimo2;
 		shimo[2] = shimo3;
 		shimo[3] = shimo4;
 
-		// ”z—ñshimo‚ğƒVƒƒƒbƒtƒ‹
+		// é…åˆ—shimoã‚’ã‚·ãƒ£ãƒƒãƒ•ãƒ«
 		//shuffle(shimo);
 		array = new int[4];
 		for (int s = 0; s < 4; s++) {
@@ -317,115 +317,103 @@ public class QuizActivity extends Activity {
 		}
 		
 
-		// ‰æ‘œ‚ğƒZƒbƒg
+		// ç”»åƒã‚’ã‚»ãƒƒãƒˆ
 		shimo[array[0]].setImageResource(image[res[0]]);
 		shimo[array[1]].setImageResource(image[res[1]]);
 		shimo[array[2]].setImageResource(image[res[2]]);
 		shimo[array[3]].setImageResource(image[res[3]]);
 
 		counter = (TextView) findViewById(R.id.count);
-		counter.setText(String.valueOf(q) + "–â–Ú");
+		counter.setText(String.valueOf(q) + "å•ç›®");
 
-		// ã‚Ì‹å‚ğƒZƒbƒg
+		// ä¸Šã®å¥ã‚’ã‚»ãƒƒãƒˆ
 		kaminoku = (TextView) findViewById(R.id.kaminoku);
 
 		if (number2 == 100 || number2 == 50 || number2 == 25) {
-			// ƒ‰ƒ“ƒ_ƒ€‚¾‚Á‚½‚ç
+			// ãƒ©ãƒ³ãƒ€ãƒ ã ã£ãŸã‚‰
 			kaminoku.setText(stringkami[random[count]]);
 		} else {
-			// ƒ‰ƒ“ƒ_ƒ€‚¶‚á‚È‚©‚Á‚½‚ç
+			// ãƒ©ãƒ³ãƒ€ãƒ ã˜ã‚ƒãªã‹ã£ãŸã‚‰
 			kaminoku.setText(stringkami[count]);
 		}
 
 	}
 
-	// ƒVƒƒƒbƒtƒ‹‚Ì•”•ª
-	public static void shuffle(ImageButton[] arr) {
-		for (int i = arr.length - 1; i > 0; i--) {
-			int t = (int) (Math.random() * i); // 0`i-1‚Ì’†‚©‚ç“K“–‚É‘I‚Ô
-
-			// ‘I‚Î‚ê‚½’l‚ÆŒğŠ·‚·‚é
-			ImageButton tmp = arr[i];
-			arr[i] = arr[t];
-			arr[t] = tmp;
-		}
-	}
-
-	// ƒVƒƒƒbƒtƒ‹‚Ì•”•ª
+	// ã‚·ãƒ£ãƒƒãƒ•ãƒ«ã®éƒ¨åˆ†
 	public static void shuffle(int[] arr) {
 		for (int i = arr.length - 1; i > 0; i--) {
-			int t = (int) (Math.random() * i); // 0`i-1‚Ì’†‚©‚ç“K“–‚É‘I‚Ô
+			int t = (int) (Math.random() * i); // 0ï½i-1ã®ä¸­ã‹ã‚‰é©å½“ã«é¸ã¶
 
-			// ‘I‚Î‚ê‚½’l‚ÆŒğŠ·‚·‚é
+			// é¸ã°ã‚ŒãŸå€¤ã¨äº¤æ›ã™ã‚‹
 			int tmp = arr[i];
 			arr[i] = arr[t];
 			arr[t] = tmp;
 		}
 	}
 
-	// ‚Ç‚ê‚©ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+	// ã©ã‚Œã‹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
 	public void onClick(View v) {
 		if (quiz == true) {
-			// ‰Ÿ‚³‚ê‚½ƒ{ƒ^ƒ“‚ğæ“¾
+			// æŠ¼ã•ã‚ŒãŸãƒœã‚¿ãƒ³ã‚’å–å¾—
 			ImageButton btn = (ImageButton) v;
 			q++;
 			count++;
 
-			// ³‰ğ‚©•s³‰ğ‚Ìˆ—
+			// æ­£è§£ã‹ä¸æ­£è§£ã®å‡¦ç†
 			if (shimo[array[3]] == btn) {
-				// ³‰ğ‚È‚ç
-				Toast.makeText(this, "³‰ğ‚Å‚·", Toast.LENGTH_SHORT).show();
+				// æ­£è§£ãªã‚‰
+				Toast.makeText(this, "æ­£è§£ã§ã™", Toast.LENGTH_SHORT).show();
 				right++;
 
 			} else {
-				// •s³‰ğ‚È‚ç
-				Toast.makeText(this, "•s³‰ğ‚Å‚·", Toast.LENGTH_SHORT).show();
+				// ä¸æ­£è§£ãªã‚‰
+				Toast.makeText(this, "ä¸æ­£è§£ã§ã™", Toast.LENGTH_SHORT).show();
 				if (hardcore) {
 					Intent quiz = new Intent(this, QuizActivity.class);
 					if (number2 == 25) {
-						// 25–âƒ‰ƒ“ƒ_ƒ€
+						// 25å•ãƒ©ãƒ³ãƒ€ãƒ 
 						quiz.putExtra("number", 25);
 						quiz.putExtra("number2", 25);
 						startActivity(quiz);
 						finish();
 
 					} else if (number2 == 50) {
-						// 50–âƒ‰ƒ“ƒ_ƒ€
+						// 50å•ãƒ©ãƒ³ãƒ€ãƒ 
 						quiz.putExtra("number", 50);
 						quiz.putExtra("number2", 50);
 						startActivity(quiz);
 						finish();
 
 					} else if (number2 == 100) {
-						// 100–âƒ‰ƒ“ƒ_ƒ€
+						// 100å•ãƒ©ãƒ³ãƒ€ãƒ 
 						quiz.putExtra("number", 100);
 						quiz.putExtra("number2", 100);
 						startActivity(quiz);
 						finish();
 
 					} else if (number2 == 1225) {
-						// 1ñ‚©‚ç25ñ
+						// 1é¦–ã‹ã‚‰25é¦–
 						quiz.putExtra("number", 1225);
 						quiz.putExtra("number2", 1225);
 						startActivity(quiz);
 						finish();
 
 					} else if (number2 == 26250) {
-						// 26ñ‚©‚ç50ñ
+						// 26é¦–ã‹ã‚‰50é¦–
 						quiz.putExtra("number", 26250);
 						quiz.putExtra("number2", 26250);
 						startActivity(quiz);
 						finish();
 
 					} else if (number2 == 51275) {
-						// 51ñ‚©‚ç75ñ
+						// 51é¦–ã‹ã‚‰75é¦–
 						quiz.putExtra("number", 51275);
 						quiz.putExtra("number2", 51275);
 						startActivity(quiz);
 						finish();
 
 					} else if (number2 == 762100) {
-						// 76ñ‚©‚ç100ñ
+						// 76é¦–ã‹ã‚‰100é¦–
 						quiz.putExtra("number", 762100);
 						quiz.putExtra("number2", 762100);
 						startActivity(quiz);
@@ -439,18 +427,18 @@ public class QuizActivity extends Activity {
 				}
 			}
 
-			// –â‘è‚ªI‚í‚Á‚½‚©‚Ç‚¤‚©
+			// å•é¡ŒãŒçµ‚ã‚ã£ãŸã‹ã©ã†ã‹
 			if (count == number) {
-				// count–â‚â‚Á‚½‚çŒ‹‰Ê‚ğ•\¦
+				// countå•ã‚„ã£ãŸã‚‰çµæœã‚’è¡¨ç¤º
 				setContentView(R.layout.result_main);
 				TextView result1 = (TextView) findViewById(R.id.textView2);
 				TextView result2 = (TextView) findViewById(R.id.textView3);
-				result1.setText(String.valueOf(number3) + "–â’†");
-				result2.setText(String.valueOf(right) + "–â³‰ğ");
+				result1.setText(String.valueOf(number3) + "å•ä¸­");
+				result2.setText(String.valueOf(right) + "å•æ­£è§£");
 				quiz = false;
 
 			} else {
-				// ‚à‚µ–â‘è”‚ªˆá‚Á‚½‚ç–ß‚·
+				// ã‚‚ã—å•é¡Œæ•°ãŒé•ã£ãŸã‚‰æˆ»ã™
 				setContentView(R.layout.quiz_main);
 				choices();
 
@@ -458,7 +446,7 @@ public class QuizActivity extends Activity {
 		} else if (quiz == false) {
 			switch (v.getId()) {
 			case R.id.title:
-				// ƒ^ƒCƒgƒ‹‚É–ß‚é
+				// ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹
 				Intent title = new Intent(this, MainActivity.class);
 				startActivity(title);
 				finish();
@@ -470,27 +458,27 @@ public class QuizActivity extends Activity {
 
 	public void cancel(View v) {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-		// ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚ÌƒƒbƒZ[ƒW‚ğİ’è‚µ‚Ü‚·
-		alertDialogBuilder.setMessage("–{“–‚ÉI—¹‚µ‚Ü‚·‚©H");
-		// ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚Ìm’èƒ{ƒ^ƒ“‚ªƒNƒŠƒbƒN‚³‚ê‚½‚ÉŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒNƒŠƒXƒi[‚ğ“o˜^‚µ‚Ü‚·
-		alertDialogBuilder.setPositiveButton("‚Í‚¢",
+		// ã‚¢ãƒ©ãƒ¼ãƒˆãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¨­å®šã—ã¾ã™
+		alertDialogBuilder.setMessage("æœ¬å½“ã«çµ‚äº†ã—ã¾ã™ã‹ï¼Ÿ");
+		// ã‚¢ãƒ©ãƒ¼ãƒˆãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®è‚¯å®šãƒœã‚¿ãƒ³ãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ãƒªã‚¹ãƒŠãƒ¼ã‚’ç™»éŒ²ã—ã¾ã™
+		alertDialogBuilder.setPositiveButton("ã¯ã„",
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						titleBack();
 					}
 				});
-		// ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚Ì’†—§ƒ{ƒ^ƒ“‚ªƒNƒŠƒbƒN‚³‚ê‚½‚ÉŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒNƒŠƒXƒi[‚ğ“o˜^‚µ‚Ü‚·
-		alertDialogBuilder.setNeutralButton("‚¢‚¢‚¦",
+		// ã‚¢ãƒ©ãƒ¼ãƒˆãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ä¸­ç«‹ãƒœã‚¿ãƒ³ãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ãƒªã‚¹ãƒŠãƒ¼ã‚’ç™»éŒ²ã—ã¾ã™
+		alertDialogBuilder.setNeutralButton("ã„ã„ãˆ",
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 					}
 				});
-		// ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚ÌƒLƒƒƒ“ƒZƒ‹‚ª‰Â”\‚©‚Ç‚¤‚©‚ğİ’è‚µ‚Ü‚·
+		// ã‚¢ãƒ©ãƒ¼ãƒˆãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãŒå¯èƒ½ã‹ã©ã†ã‹ã‚’è¨­å®šã—ã¾ã™
 		alertDialogBuilder.setCancelable(true);
 		AlertDialog alertDialog = alertDialogBuilder.create();
-		// ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚Ü‚·
+		// ã‚¢ãƒ©ãƒ¼ãƒˆãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤ºã—ã¾ã™
 		alertDialog.show();
 	}
 
