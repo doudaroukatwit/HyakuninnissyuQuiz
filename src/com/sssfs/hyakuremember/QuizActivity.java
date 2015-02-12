@@ -1,11 +1,15 @@
 package com.sssfs.hyakuremember;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -13,6 +17,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+
 import java.util.Random;
 
 public class QuizActivity extends Activity {
@@ -21,12 +27,17 @@ public class QuizActivity extends Activity {
 	ImageButton shimo2;
 	ImageButton shimo3;
 	ImageButton shimo4;
+	ImageButton btn;
 
 	// 上の句
 	TextView kaminoku;
 
 	// カウント
 	TextView counter;
+
+	// 何首目か
+	TextView poem;
+	boolean poemview;
 
 	// ChooseActivityから受け取る
 	int number;
@@ -52,10 +63,25 @@ public class QuizActivity extends Activity {
 	// 正解数
 	int right = 0;
 
+	// 正解不正解の記録用
+	String[] rString;
+
+	// 正解不正解の表示
+	TextView ans;
+	
+	//次へ
+	TextView next;
+
+	// SE
+	MediaPlayer true1;
+	MediaPlayer false1;
+
 	// いらないかもしれない
 	int[] res = new int[4];
 	boolean quiz;
+	boolean push = false;
 	int q = 1;
+	int c = 0;
 
 	// モード選択
 	boolean repeat;
@@ -167,12 +193,19 @@ public class QuizActivity extends Activity {
 		setContentView(R.layout.quiz_main);
 		count = 0;
 		quiz = true;
+		true1 = MediaPlayer.create(getApplicationContext(), R.raw.true1);// 正解の音声読み込み
+		false1 = MediaPlayer.create(getApplicationContext(), R.raw.false1);// 不正解の音声読み込み
 
 		// モード読み込み
 		SharedPreferences mSp = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		hardcore = mSp.getBoolean("hardcore", false);
-		repeat = mSp.getBoolean("repeat", false);
+		String mode_preference = mSp.getString("mode", "none");
+		if (mode_preference.equals("hardcore"))
+			hardcore = true;
+		if (mode_preference.equals("repeat"))
+			repeat = true;
+
+		poemview = mSp.getBoolean("poemview", true);
 
 		// ChooseActivityから値を受け取る
 		Intent mQuiz = getIntent();
@@ -186,53 +219,44 @@ public class QuizActivity extends Activity {
 			startActivity(main);
 			finish();
 
-		} else if (number2 == 100) {
+		} else if (number2 == 100 || number2 == 50 || number2 == 25) {
 			// 100のランダムの時
 			number3 = number2;
 			random = new int[100];
 			for (int i = 0; i < 100; i++) {
 				random[i] = i;
-
 			}
 			shuffle(random);
-		} else if (number2 == 50 || number2 == 25) {
-			// 50と25のランダムの時
-			number3 = number2;
-			Random mRandom = new Random();
-			random = new int[50];
-			for (int s = 0; s < number2; s++) {
-				random[s] = mRandom.nextInt(99);
-				int x = random[s];
-				for (s = 0; s < number2; s++)
-					if (random[s] == x)
-						break;
-			}
-
 		} else if (number == 1225) {
 			// 1首から25首の時
+			c = 0;
 			count = 0;
 			number = 25;
 			number3 = 25;
 
 		} else if (number == 26250) {
 			// 26首から50首の時
+			c = 25;
 			count = 25;
 			number = 50;
 			number3 = 25;
 
 		} else if (number == 51275) {
 			// 51首から75首の時
+			c = 50;
 			count = 50;
 			number = 75;
 			number3 = 25;
 
 		} else if (number == 762100) {
 			// 76首から100首の時
+			c = 75;
 			count = 75;
 			number = 100;
 			number3 = 25;
 
 		}
+		rString = new String[10000];
 		// 問題を選ぶ
 		choices();
 	}
@@ -240,19 +264,32 @@ public class QuizActivity extends Activity {
 	// 戻れないようにする
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		// TODO 自動生成されたメソッド・スタブ
-		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-				Toast.makeText(this, "戻るのは禁止です", Toast.LENGTH_SHORT).show();
-				return false;
+		if (quiz == true) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
+				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+					Toast.makeText(this, "戻るのは禁止です", Toast.LENGTH_SHORT).show();
+					return false;
+				}
+			}
+		} else {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
+				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+					setContentView(R.layout.result_main);
+					TextView result1 = (TextView) findViewById(R.id.textView2);
+					TextView result2 = (TextView) findViewById(R.id.textView3);
+					result1.setText(String.valueOf(number3) + "問中");
+					result2.setText(String.valueOf(right) + "問正解");
+					quiz = false;
+					return false;
+				}
 			}
 		}
 		return super.dispatchKeyEvent(event);
+
 	}
 
 	// 出題部分
 	private void choices() {
-		// TODO Auto-generated method stub
 		// 答え以外の3つの選択肢を選ぶ部分
 		Random mRandom = new Random();
 		int[] No = new int[3];
@@ -274,9 +311,6 @@ public class QuizActivity extends Activity {
 				}
 			}
 		}
-		for (int i = 0; i < 3; i++) {
-			Log.v(String.valueOf(i), String.valueOf(No[i]));
-		}
 
 		// 選択肢を配列resに追加。
 		res[0] = No[0];
@@ -290,7 +324,6 @@ public class QuizActivity extends Activity {
 		} else {
 			// ランダムじゃなかったら
 			res[3] = count;
-
 		}
 
 		// ImageButtonを結びつけ
@@ -306,7 +339,7 @@ public class QuizActivity extends Activity {
 		shimo[3] = shimo4;
 
 		// 配列shimoをシャッフル
-		//shuffle(shimo);
+		// shuffle(shimo);
 		array = new int[4];
 		for (int s = 0; s < 4; s++) {
 			array[s] = mRandom.nextInt(4);
@@ -315,7 +348,6 @@ public class QuizActivity extends Activity {
 				if (array[s] == x)
 					break;
 		}
-		
 
 		// 画像をセット
 		shimo[array[0]].setImageResource(image[res[0]]);
@@ -323,37 +355,30 @@ public class QuizActivity extends Activity {
 		shimo[array[2]].setImageResource(image[res[2]]);
 		shimo[array[3]].setImageResource(image[res[3]]);
 
+		ans = (TextView) findViewById(R.id.ans);
+		next = (TextView) findViewById(R.id.next);
+
 		counter = (TextView) findViewById(R.id.count);
 		counter.setText(String.valueOf(q) + "問目");
-
 		// 上の句をセット
 		kaminoku = (TextView) findViewById(R.id.kaminoku);
-
+		poem = (TextView) findViewById(R.id.poem);
 		if (number2 == 100 || number2 == 50 || number2 == 25) {
 			// ランダムだったら
 			kaminoku.setText(stringkami[random[count]]);
+			if (poemview)
+				poem.setText(String.valueOf(random[count] + 1) + "首目");
 		} else {
 			// ランダムじゃなかったら
 			kaminoku.setText(stringkami[count]);
-		}
-
-	}
-
-	// シャッフルの部分
-	public static void shuffle(ImageButton[] arr) {
-		for (int i = arr.length - 1; i > 0; i--) {
-			int t = (int) (Math.random() * i); // 0～i-1の中から適当に選ぶ
-
-			// 選ばれた値と交換する
-			ImageButton tmp = arr[i];
-			arr[i] = arr[t];
-			arr[t] = tmp;
+			if (poemview)
+				poem.setText(String.valueOf(count + 1) + "首目");
 		}
 	}
 
 	// シャッフルの部分
 	public static void shuffle(int[] arr) {
-		for (int i = arr.length - 1; i > 0; i--) {
+		for (int i = 99; i > 0; i--) {
 			int t = (int) (Math.random() * i); // 0～i-1の中から適当に選ぶ
 
 			// 選ばれた値と交換する
@@ -365,107 +390,135 @@ public class QuizActivity extends Activity {
 
 	// どれかボタンが押されたら
 	public void onClick(View v) {
-		if (quiz == true) {
-			// 押されたボタンを取得
-			ImageButton btn = (ImageButton) v;
-			q++;
-			count++;
+		// 押されたボタンを取得
 
+		if (quiz) {
+			if (!push) {
+				btn = (ImageButton) v;
+			}
+			shimo[array[0]].setVisibility(View.INVISIBLE);
+			shimo[array[1]].setVisibility(View.INVISIBLE);
+			shimo[array[2]].setVisibility(View.INVISIBLE);
+			shimo[array[3]].setEnabled(false);
+			next.setText(R.string.nexts);
 			// 正解か不正解の処理
-			if (shimo[array[3]] == btn) {
-				// 正解なら
-				Toast.makeText(this, "正解です", Toast.LENGTH_SHORT).show();
-				right++;
-
-			} else {
-				// 不正解なら
-				Toast.makeText(this, "不正解です", Toast.LENGTH_SHORT).show();
-				if (hardcore) {
-					Intent quiz = new Intent(this, QuizActivity.class);
-					if (number2 == 25) {
-						// 25問ランダム
-						quiz.putExtra("number", 25);
-						quiz.putExtra("number2", 25);
-						startActivity(quiz);
-						finish();
-
-					} else if (number2 == 50) {
-						// 50問ランダム
-						quiz.putExtra("number", 50);
-						quiz.putExtra("number2", 50);
-						startActivity(quiz);
-						finish();
-
-					} else if (number2 == 100) {
-						// 100問ランダム
-						quiz.putExtra("number", 100);
-						quiz.putExtra("number2", 100);
-						startActivity(quiz);
-						finish();
-
-					} else if (number2 == 1225) {
-						// 1首から25首
-						quiz.putExtra("number", 1225);
-						quiz.putExtra("number2", 1225);
-						startActivity(quiz);
-						finish();
-
-					} else if (number2 == 26250) {
-						// 26首から50首
-						quiz.putExtra("number", 26250);
-						quiz.putExtra("number2", 26250);
-						startActivity(quiz);
-						finish();
-
-					} else if (number2 == 51275) {
-						// 51首から75首
-						quiz.putExtra("number", 51275);
-						quiz.putExtra("number2", 51275);
-						startActivity(quiz);
-						finish();
-
-					} else if (number2 == 762100) {
-						// 76首から100首
-						quiz.putExtra("number", 762100);
-						quiz.putExtra("number2", 762100);
-						startActivity(quiz);
-						finish();
-
+			if (!push) {
+				if (shimo[array[3]] == btn) {
+					// 正解なら
+					true1.start();
+					ans.setTextColor(Color.RED);
+					ans.setText("○\n正解");
+					right++;
+					rString[q - 1] = "○";
+					push = true;
+				} else {
+					// 不正解なら
+					false1.start();
+					ans.setTextColor(Color.BLUE);
+					ans.setText("×\n不正解");
+					if (!repeat) {
+						rString[q - 1] = "×";
+					} else {
+						rString[q - 1] = "○";
 					}
-				}
-				if (repeat) {
-					count--;
-					q--;
+					push = true;
 				}
 			}
-
-			// 問題が終わったかどうか
-			if (count == number) {
-				// count問やったら結果を表示
-				setContentView(R.layout.result_main);
-				TextView result1 = (TextView) findViewById(R.id.textView2);
-				TextView result2 = (TextView) findViewById(R.id.textView3);
-				result1.setText(String.valueOf(number3) + "問中");
-				result2.setText(String.valueOf(right) + "問正解");
-				quiz = false;
-
-			} else {
-				// もし問題数が違ったら戻す
-				setContentView(R.layout.quiz_main);
-				choices();
-
-			}
-		} else if (quiz == false) {
+		} else {
 			switch (v.getId()) {
 			case R.id.title:
 				// タイトルに戻る
 				Intent title = new Intent(this, MainActivity.class);
 				startActivity(title);
-				finish();
 				break;
+			case R.id.answer:
+				setContentView(R.layout.result_sub);
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+						android.R.layout.simple_list_item_1);
+				int i;
+				// 要素の追加（1）
+				for (i = 0; i < number3; i++) {
+					Log.v("a", String.valueOf(c));
+					String iString = String.valueOf(i + 1);
+					if (number2 == 100) {
+						String kami = getString(stringkami[random[c]]);
+						String shimo = getString(stringshimo[random[c]]);
+						adapter.add(iString + "問目" + "[" + rString[c] + "]\n"
+								+ kami + "\n" + shimo);
+					} else if (number2 == 50 || number2 == 25) {
+						// ランダムだったら
+						String kami = getString(stringkami[random[i]]);
+						String shimo = getString(stringshimo[random[i]]);
+						adapter.add(iString + "問目" + "[" + rString[i] + "]\n"
+								+ kami + "\n" + shimo);
+					} else {
+						// ランダムじゃなかったら
+						String kami = getString(stringkami[c]);
+						String shimo = getString(stringshimo[c]);
+						adapter.add(iString + "問目" + "[" + rString[i] + "]\n"
+								+ kami + "\n" + shimo);
 
+					}
+					c++;
+
+				}
+				ListView list = (ListView) findViewById(R.id.listView);
+				list.setAdapter(adapter);
+				list.setFastScrollEnabled(true);
+				list.setFastScrollAlwaysVisible(true);
+
+				break;
+			case R.id.again:
+				again();
+				break;
 			}
 		}
+	}
+
+	// 画面のタッチを認識
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (push && quiz) {
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_UP:
+				next.setText("");
+				// 問題数を+1
+				if (!(count == number3) || !(hardcore) && push) {
+					count++;
+					q++;
+				}
+				if (!(shimo[array[3]] == btn)) {
+					if (hardcore) {
+						again();
+					}
+					if (repeat)
+						count--;
+				}
+				// 問題が終わったかどうか
+				if (count == number) {
+					// count問やったら結果を表示
+					setContentView(R.layout.result_main);
+					TextView result1 = (TextView) findViewById(R.id.textView2);
+					TextView result2 = (TextView) findViewById(R.id.textView3);
+					result1.setText(String.valueOf(number3) + "問中");
+					result2.setText(String.valueOf(right) + "問正解");
+					quiz = false;
+
+				} else {
+					// もし問題数が違ったら戻す ハードコアならその処理はしない
+					if ((shimo[array[3]] == btn && hardcore) || !(hardcore)) {
+						shimo[array[0]].setVisibility(View.VISIBLE);
+						shimo[array[1]].setVisibility(View.VISIBLE);
+						shimo[array[2]].setVisibility(View.VISIBLE);
+						shimo[array[3]].setEnabled(true);
+						push = false;
+						ans.setText("");
+						choices();
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	public void cancel(View v) {
@@ -492,6 +545,59 @@ public class QuizActivity extends Activity {
 		AlertDialog alertDialog = alertDialogBuilder.create();
 		// アラートダイアログを表示します
 		alertDialog.show();
+	}
+
+	public void again() {
+		Intent quiz = new Intent(this, QuizActivity.class);
+		if (number2 == 25) {
+			// 25問ランダム
+			quiz.putExtra("number", 25);
+			quiz.putExtra("number2", 25);
+			startActivity(quiz);
+			finish();
+
+		} else if (number2 == 50) {
+			// 50問ランダム
+			quiz.putExtra("number", 50);
+			quiz.putExtra("number2", 50);
+			startActivity(quiz);
+			finish();
+
+		} else if (number2 == 100) {
+			// 100問ランダム
+			quiz.putExtra("number", 100);
+			quiz.putExtra("number2", 100);
+			startActivity(quiz);
+			finish();
+
+		} else if (number2 == 1225) {
+			// 1首から25首
+			quiz.putExtra("number", 1225);
+			quiz.putExtra("number2", 1225);
+			startActivity(quiz);
+			finish();
+
+		} else if (number2 == 26250) {
+			// 26首から50首
+			quiz.putExtra("number", 26250);
+			quiz.putExtra("number2", 26250);
+			startActivity(quiz);
+			finish();
+
+		} else if (number2 == 51275) {
+			// 51首から75首
+			quiz.putExtra("number", 51275);
+			quiz.putExtra("number2", 51275);
+			startActivity(quiz);
+			finish();
+
+		} else if (number2 == 762100) {
+			// 76首から100首
+			quiz.putExtra("number", 762100);
+			quiz.putExtra("number2", 762100);
+			startActivity(quiz);
+			finish();
+		}
 	}
 
 	public void titleBack() {

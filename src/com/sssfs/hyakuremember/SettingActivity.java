@@ -2,14 +2,19 @@ package com.sssfs.hyakuremember;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.widget.Toast;
 
-public class SettingActivity extends PreferenceActivity {
+public class SettingActivity extends PreferenceActivity implements
+		OnSharedPreferenceChangeListener {
 	SharedPreferences mPref;
 	SharedPreferences.Editor mEditor;
 	boolean survival;
@@ -32,7 +37,7 @@ public class SettingActivity extends PreferenceActivity {
 		});
 
 		// アップデートの項目
-		Preference update = (Preference) findPreference("update");
+		Preference update = findPreference("update");
 		update.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
@@ -43,6 +48,55 @@ public class SettingActivity extends PreferenceActivity {
 				return true;
 			}
 		});
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onResume() {
+		super.onResume();
+		getPreferenceScreen().getSharedPreferences()
+				.registerOnSharedPreferenceChangeListener(this);
+		Preference p = findPreference("mode");
+		SharedPreferences mSp = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		String mode_preference = mSp.getString("mode", "none");
+		String mode = "モードを設定してください";
+		if (mode_preference.equals("hardcore"))
+			mode = "スパルタモード";
+		if (mode_preference.equals("repeat"))
+			mode = "反復モード";
+		if (mode_preference.equals("none"))
+			mode = "モードを設定";
+		p.setSummary(mode);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onPause() {
+		super.onPause();
+		getPreferenceScreen().getSharedPreferences()
+				.unregisterOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		Log.i("onSharedPreferenceChanged", key);
+		if (key.equals("mode")) {
+			SharedPreferences mSp = PreferenceManager
+					.getDefaultSharedPreferences(getApplicationContext());
+			String mode_preference = mSp.getString("mode", "none");
+			@SuppressWarnings("deprecation")
+			Preference p = (ListPreference) findPreference(key);
+			String mode = "モードを設定してください";
+			if (mode_preference.equals("hardcore"))
+				mode = "スパルタモード";
+			if (mode_preference.equals("repeat"))
+				mode = "反復モード";
+			if (mode_preference.equals("none"))
+				mode = "モードを設定してください";
+			p.setSummary(mode);
+		}
 	}
 
 	public void way() {

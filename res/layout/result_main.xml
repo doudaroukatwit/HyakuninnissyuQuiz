@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/backgroundimage" >
 
     <TextView
         android:id="@+id/resultView"
@@ -21,7 +22,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    <TextView
+
+    <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,5 +40,25 @@
         android:layout_toRightOf="@+id/resultView"
         android:onClick="onClick"
         android:text="@string/titleback" />
+
+    <Button
+        android:id="@+id/answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/title"
+        android:layout_alignRight="@+id/title"
+        android:layout_marginBottom="16dp"
+        android:onClick="onClick"
+        android:text="@string/ansewer" />
+
+    <Button
+        android:id="@+id/again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/answer"
+        android:layout_marginLeft="27dp"
+        android:onClick="onClick"
+        android:text="@string/again" />
 
 </RelativeLayout>

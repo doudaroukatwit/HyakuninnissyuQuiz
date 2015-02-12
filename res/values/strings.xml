@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">百人一首クイズ</string>
@@ -18,9 +17,11 @@
     <string name="sevsixtohund">76首～100首</string>
     <string name="cancel">中断</string>
     <string name="desc">選択肢を入れる</string>
+    <string name="ansewer">答えを見る</string>
     <string name="result">結果</string>
     <string name="titleback">最初に戻る</string>
-    <string name="agein">もう一度</string>
+    <string name="again">もう一度</string>
+    <string name="nexts">画面をタップすると次の問題です。</string>
     <string name="kami1">秋の田のかりほの庵の苫をあらみ</string>
     <string name="kami2">春過ぎて夏来にけらし白妙の</string>
     <string name="kami3">あしびきの山鳥の尾のしだり尾の</string>
@@ -221,5 +222,16 @@
     <string name="shimo98">みそぎぞ夏のしるしなりける</string>
     <string name="shimo99">世をおもふゆゑにもの思ふ身は</string>
     <string name="shimo100">なほあまりある昔なりけり</string>
+
+    <string-array name="modelist">
+        <item>スパルタモード</item>
+        <item>反復モード</item>
+        <item>モードなし</item>
+    </string-array>
+    <string-array name="modevalue">
+        <item>hardcore</item>
+        <item>repeat</item>
+        <item>none</item>
+    </string-array>
 
 </resources>

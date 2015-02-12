@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/backgroundimage" >
 
     <Button
         android:id="@+id/fifty"
@@ -9,6 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:onClick="onClick"
         android:text="@string/fifty" />
 
@@ -28,6 +31,8 @@
         android:layout_above="@+id/fifty"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:onClick="onClick"
         android:text="@string/twentyfive" />
 
@@ -37,6 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/fifty"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="30dp"
         android:onClick="onClick"
         android:text="@string/hundred" />

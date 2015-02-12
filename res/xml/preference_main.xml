@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <ListPreference
+        android:defaultValue="モードなし"
+        android:dialogTitle="Check Mode"
+        android:entries="@array/modelist"
+        android:entryValues="@array/modevalue"
+        android:key="mode"
+        android:summary="モードを選択"
+        android:title="モード選択" />
+
     <CheckBoxPreference
-        android:key="repeat"
-        android:summary="間違えたらもう一度解き直します"
-        android:title="反復モード " />
-    <CheckBoxPreference
-        android:key="hardcore"
-        android:summary="間違えたら最初から"
-        android:title="スパルタモード" />
+        android:key="poemview"
+        android:summary="何首目かを表示"
+        android:title="首表示" />
 
     <Preference
         android:key="version"
-        android:summary="v0.9.3"
+        android:summary="v0.9.5"
         android:title="バージョン情報" />
     <Preference
         android:key="update"
