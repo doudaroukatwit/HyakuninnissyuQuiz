@@ -1,11 +1,8 @@
 package com.sssfs.hyakuremember;
 
 import android.app.Activity;
-//import android.app.AlertDialog;
-//import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,39 +41,7 @@ public class MainActivity extends Activity {
 			break;
 		}
 	}
-/*
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		// TODO 自動生成されたメソッド・スタブ
-		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						this);
-				// アラートダイアログのメッセージを設定します
-				alertDialogBuilder.setMessage("本当に終了しますか？");
-				// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
-				alertDialogBuilder.setPositiveButton("はい",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								close();
-							}
-						});
-				alertDialogBuilder.setNeutralButton("いいえ", null);
-				alertDialogBuilder.setCancelable(true);
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				// アラートダイアログを表示します
-				alertDialog.show();
-			}
-		}
-		return super.dispatchKeyEvent(event);
-	}
 
-	public void close() {
-		this.moveTaskToBack(true);
-	}
-*/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
