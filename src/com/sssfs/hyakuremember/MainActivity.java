@@ -1,12 +1,11 @@
 package com.sssfs.hyakuremember;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+//import android.app.AlertDialog;
+//import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+//import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,14 +16,13 @@ public class MainActivity extends Activity {
 	Button order;
 	boolean back;
 
-	@SuppressLint("InlinedApi") @Override
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		getWindow().getDecorView().setBackgroundResource(
 				R.drawable.backgroundimage);
-		setTheme(android.R.style.Theme_Holo_Light_NoActionBar_TranslucentDecor);
 		random = (Button) findViewById(R.id.rdm);
 		order = (Button) findViewById(R.id.ord);
 		back = false;
@@ -46,7 +44,7 @@ public class MainActivity extends Activity {
 			break;
 		}
 	}
-
+/*
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// TODO 自動生成されたメソッド・スタブ
@@ -78,7 +76,7 @@ public class MainActivity extends Activity {
 	public void close() {
 		this.moveTaskToBack(true);
 	}
-
+*/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);

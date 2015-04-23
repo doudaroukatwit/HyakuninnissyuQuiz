@@ -68,20 +68,20 @@ public class QuizActivity extends Activity {
 
 	// 正解不正解の表示
 	TextView ans;
-	
-	//次へ
+
+	// 次へ
 	TextView next;
 
 	// SE
-	MediaPlayer true1;
-	MediaPlayer false1;
+	MediaPlayer true1; // 正解
+	MediaPlayer false1; // 不正解
 
 	// いらないかもしれない
-	int[] res = new int[4];
-	boolean quiz;
-	boolean push = false;
-	int q = 1;
-	int c = 0;
+	int[] res = new int[4]; // 下の句を格納
+	boolean quiz; // 回答中かどうか
+	boolean push = false; // 押されたらtrue
+	int quizCount;// 何問やったか
+	int mQuantity = 0; // 問題の数
 
 	// モード選択
 	boolean repeat;
@@ -150,6 +150,7 @@ public class QuizActivity extends Activity {
 			R.string.shimo94, R.string.shimo95, R.string.shimo96,
 			R.string.shimo97, R.string.shimo98, R.string.shimo99,
 			R.string.shimo100, };
+
 	// 下の句画像
 	final Integer[] image = { R.drawable.shimo1, R.drawable.shimo2,
 			R.drawable.shimo3, R.drawable.shimo4, R.drawable.shimo5,
@@ -192,6 +193,7 @@ public class QuizActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.quiz_main);
 		count = 0;
+		quizCount = 1;
 		quiz = true;
 		true1 = MediaPlayer.create(getApplicationContext(), R.raw.true1);// 正解の音声読み込み
 		false1 = MediaPlayer.create(getApplicationContext(), R.raw.false1);// 不正解の音声読み込み
@@ -200,9 +202,9 @@ public class QuizActivity extends Activity {
 		SharedPreferences mSp = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 		String mode_preference = mSp.getString("mode", "none");
-		if (mode_preference.equals("hardcore"))
+		if (mode_preference.equals("hardcore")) // スパルタモード
 			hardcore = true;
-		if (mode_preference.equals("repeat"))
+		if (mode_preference.equals("repeat")) // 反復モード
 			repeat = true;
 
 		poemview = mSp.getBoolean("poemview", true);
@@ -212,7 +214,7 @@ public class QuizActivity extends Activity {
 		number = mQuiz.getIntExtra("number", 0);
 		number2 = mQuiz.getIntExtra("number2", 0);
 
-		// 直接起動した時、戻る。
+		// 直接起動した時、タイトルに戻る。
 		if (number == 0) {
 			Toast.makeText(this, "無理でした", Toast.LENGTH_SHORT).show();
 			Intent main = new Intent(this, MainActivity.class);
@@ -220,7 +222,7 @@ public class QuizActivity extends Activity {
 			finish();
 
 		} else if (number2 == 100 || number2 == 50 || number2 == 25) {
-			// 100のランダムの時
+			// ランダムの時
 			number3 = number2;
 			random = new int[100];
 			for (int i = 0; i < 100; i++) {
@@ -229,28 +231,28 @@ public class QuizActivity extends Activity {
 			shuffle(random);
 		} else if (number == 1225) {
 			// 1首から25首の時
-			c = 0;
+			mQuantity = 0;
 			count = 0;
 			number = 25;
 			number3 = 25;
 
 		} else if (number == 26250) {
 			// 26首から50首の時
-			c = 25;
+			mQuantity = 25;
 			count = 25;
 			number = 50;
 			number3 = 25;
 
 		} else if (number == 51275) {
 			// 51首から75首の時
-			c = 50;
+			mQuantity = 50;
 			count = 50;
 			number = 75;
 			number3 = 25;
 
 		} else if (number == 762100) {
 			// 76首から100首の時
-			c = 75;
+			mQuantity = 75;
 			count = 75;
 			number = 100;
 			number3 = 25;
@@ -272,6 +274,7 @@ public class QuizActivity extends Activity {
 				}
 			}
 		} else {
+			// クイズが終わっているときは
 			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 					setContentView(R.layout.result_main);
@@ -339,7 +342,6 @@ public class QuizActivity extends Activity {
 		shimo[3] = shimo4;
 
 		// 配列shimoをシャッフル
-		// shuffle(shimo);
 		array = new int[4];
 		for (int s = 0; s < 4; s++) {
 			array[s] = mRandom.nextInt(4);
@@ -355,14 +357,19 @@ public class QuizActivity extends Activity {
 		shimo[array[2]].setImageResource(image[res[2]]);
 		shimo[array[3]].setImageResource(image[res[3]]);
 
+		// 正解かどうかを表示
 		ans = (TextView) findViewById(R.id.ans);
 		next = (TextView) findViewById(R.id.next);
 
+		// 何問目か
 		counter = (TextView) findViewById(R.id.count);
-		counter.setText(String.valueOf(q) + "問目");
+		counter.setText(String.valueOf(quizCount) + "問目");
+
 		// 上の句をセット
 		kaminoku = (TextView) findViewById(R.id.kaminoku);
 		poem = (TextView) findViewById(R.id.poem);
+
+		// ランダムかそうでないかの判別
 		if (number2 == 100 || number2 == 50 || number2 == 25) {
 			// ランダムだったら
 			kaminoku.setText(stringkami[random[count]]);
@@ -391,16 +398,17 @@ public class QuizActivity extends Activity {
 	// どれかボタンが押されたら
 	public void onClick(View v) {
 		// 押されたボタンを取得
-
 		if (quiz) {
-			if (!push) {
-				btn = (ImageButton) v;
-			}
+			if (!push)
+				btn = (ImageButton) v;// どのボタンが押されたか
+
+			// 正解以外を非表示
 			shimo[array[0]].setVisibility(View.INVISIBLE);
 			shimo[array[1]].setVisibility(View.INVISIBLE);
 			shimo[array[2]].setVisibility(View.INVISIBLE);
 			shimo[array[3]].setEnabled(false);
 			next.setText(R.string.nexts);
+
 			// 正解か不正解の処理
 			if (!push) {
 				if (shimo[array[3]] == btn) {
@@ -409,20 +417,19 @@ public class QuizActivity extends Activity {
 					ans.setTextColor(Color.RED);
 					ans.setText("○\n正解");
 					right++;
-					rString[q - 1] = "○";
-					push = true;
+					rString[quizCount - 1] = "○";
 				} else {
 					// 不正解なら
 					false1.start();
 					ans.setTextColor(Color.BLUE);
 					ans.setText("×\n不正解");
 					if (!repeat) {
-						rString[q - 1] = "×";
+						rString[quizCount - 1] = "×";
 					} else {
-						rString[q - 1] = "○";
+						rString[quizCount - 1] = "○";
 					}
-					push = true;
 				}
+				push = true;
 			}
 		} else {
 			switch (v.getId()) {
@@ -431,20 +438,21 @@ public class QuizActivity extends Activity {
 				Intent title = new Intent(this, MainActivity.class);
 				startActivity(title);
 				break;
-			case R.id.answer:
+			case R.id.answer: // 正解のリストの表示
 				setContentView(R.layout.result_sub);
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 						android.R.layout.simple_list_item_1);
 				int i;
-				// 要素の追加（1）
+
+				// 要素の追加
 				for (i = 0; i < number3; i++) {
-					Log.v("a", String.valueOf(c));
+					Log.v("a", String.valueOf(mQuantity));
 					String iString = String.valueOf(i + 1);
 					if (number2 == 100) {
-						String kami = getString(stringkami[random[c]]);
-						String shimo = getString(stringshimo[random[c]]);
-						adapter.add(iString + "問目" + "[" + rString[c] + "]\n"
-								+ kami + "\n" + shimo);
+						String kami = getString(stringkami[random[mQuantity]]);
+						String shimo = getString(stringshimo[random[mQuantity]]);
+						adapter.add(iString + "問目" + "[" + rString[mQuantity]
+								+ "]\n" + kami + "\n" + shimo);
 					} else if (number2 == 50 || number2 == 25) {
 						// ランダムだったら
 						String kami = getString(stringkami[random[i]]);
@@ -453,45 +461,43 @@ public class QuizActivity extends Activity {
 								+ kami + "\n" + shimo);
 					} else {
 						// ランダムじゃなかったら
-						String kami = getString(stringkami[c]);
-						String shimo = getString(stringshimo[c]);
+						String kami = getString(stringkami[mQuantity]);
+						String shimo = getString(stringshimo[mQuantity]);
 						adapter.add(iString + "問目" + "[" + rString[i] + "]\n"
 								+ kami + "\n" + shimo);
 
 					}
-					c++;
+					mQuantity++;
 
 				}
 				ListView list = (ListView) findViewById(R.id.listView);
 				list.setAdapter(adapter);
-				list.setFastScrollEnabled(true);
-				list.setFastScrollAlwaysVisible(true);
+				list.setFastScrollEnabled(true);// 高速スクロール
+				list.setFastScrollAlwaysVisible(true);// 高速スクロールを常に表示
 
 				break;
 			case R.id.again:
-				again();
+				again(); // もう一度繰り返す
 				break;
 			}
 		}
 	}
 
 	// 画面のタッチを認識
-	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (push && quiz) {
 			switch (event.getAction()) {
-			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_UP:// タップした後、離したら
 				next.setText("");
 				// 問題数を+1
-				if (!(count == number3) || !(hardcore) && push) {
+				if (!(count == number3) || !(hardcore)) {
 					count++;
-					q++;
+					quizCount++;
 				}
 				if (!(shimo[array[3]] == btn)) {
-					if (hardcore) {
+					if (hardcore) // スパルタモードだったら
 						again();
-					}
-					if (repeat)
+					else if (repeat) // 反復モードだったら
 						count--;
 				}
 				// 問題が終わったかどうか
@@ -521,11 +527,12 @@ public class QuizActivity extends Activity {
 		return true;
 	}
 
+	// 途中でキャンセル
 	public void cancel(View v) {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-		// アラートダイアログのメッセージを設定します
+		// 呼び出されるメッセージの設定
 		alertDialogBuilder.setMessage("本当に終了しますか？");
-		// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
+		// はいが押された時の処理
 		alertDialogBuilder.setPositiveButton("はい",
 				new DialogInterface.OnClickListener() {
 					@Override
@@ -533,13 +540,8 @@ public class QuizActivity extends Activity {
 						titleBack();
 					}
 				});
-		// アラートダイアログの中立ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
-		alertDialogBuilder.setNeutralButton("いいえ",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
+		// いいえが押されても何もしない
+		alertDialogBuilder.setMessage("いいえ");
 		// アラートダイアログのキャンセルが可能かどうかを設定します
 		alertDialogBuilder.setCancelable(true);
 		AlertDialog alertDialog = alertDialogBuilder.create();
@@ -547,6 +549,7 @@ public class QuizActivity extends Activity {
 		alertDialog.show();
 	}
 
+	// もう一度問題を開始
 	public void again() {
 		Intent quiz = new Intent(this, QuizActivity.class);
 		if (number2 == 25) {
@@ -600,6 +603,7 @@ public class QuizActivity extends Activity {
 		}
 	}
 
+	// タイトルに戻る
 	public void titleBack() {
 		Intent title = new Intent(this, MainActivity.class);
 		startActivity(title);
